@@ -7,5 +7,6 @@ struct Ativo_AlvoApp: App {
         WindowGroup {
             Home()
         }
+        .modelContainer(for: ModelAsset.self)
     }
 }

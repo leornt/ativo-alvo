@@ -6,20 +6,26 @@ struct Add: View {
         self.asset = asset ?? ModelAsset(code: "", quantity: 0)
     }
 
-    @State
-    private var isEdit: Bool = false
-    @State
-    private var isLoading: Bool = false
-    @State
-    private var asset: ModelAsset
-    @State
-    private var step: Int = 1
-
     @Environment(\.dismiss) var dismiss
+    @Environment(\.modelContext) var modelContext
+
+    @State private var error: String = ""
+    @State private var isEdit: Bool = false
+    @State private var isError: Bool = false
+    @State private var isLoading: Bool = false
+    @State private var asset: ModelAsset
+    @State private var step: Int = 1
 
     func add() async {
-        sleep(5)
-//        dismiss()
+        if asset.code.isEmpty {
+            error = "Código inválido"
+            isError.toggle()
+            return
+        }
+        if !isEdit {
+            modelContext.insert(asset)
+        }
+        dismiss()
     }
 
     var body: some View {
@@ -59,17 +65,26 @@ struct Add: View {
                         }
                     }
                 }
-                HStack {
-                    Button("Cancelar") {
-                        dismiss()
-                    }
-                    Button("Adicionar") {
-                        isLoading = true
-                        Task {
-                            await add()
-                            isLoading = false
+                HStack(spacing: 16) {
+                    if !isEdit {
+                        Button("Cancelar") {
+                            dismiss()
                         }
-                    }.buttonStyle(.borderedProminent)
+                        Button("Adicionar") {
+                            isLoading = true
+                            Task {
+                                await add()
+                                isLoading = false
+                            }
+                        }.buttonStyle(.borderedProminent)
+                    } else {
+                        Button("Excluir", role: .destructive) {
+                            modelContext.delete(asset)
+                            dismiss()
+                        }
+                        .buttonStyle(.borderless)
+                        .tint(.red)
+                    }
                 }.frame(maxWidth: .infinity, alignment: .trailing)
             }
             .opacity(isLoading ? 0.1 : 1)
@@ -77,6 +92,12 @@ struct Add: View {
             if isLoading {
                 ProgressView()
             }
+        }.alert(isPresented: $isError) {
+            Alert(
+                title: Text("Oops!!"),
+                message: Text(error),
+                dismissButton: .default(Text("OK"))
+            )
         }
     }
 }

@@ -2,6 +2,10 @@ import SwiftData
 import SwiftUI
 
 struct Home: View {
+    @Environment(\.modelContext) var modelContext
+
+    @Query(sort: \ModelAsset.code) var assets: [ModelAsset]
+
     @State private var showAdd = false
 
     var body: some View {
@@ -14,9 +18,9 @@ struct Home: View {
                     }
                 }
                 Divider()
-                ForEach(0 ..< 10) { index in
-                    NavigationLink(destination: Text("Item \(index)")) {
-                        Text("Item \(index)")
+                ForEach(assets) { asset in
+                    NavigationLink(destination: Add(asset: asset)) {
+                        Text("\(asset.code)")
                     }
                 }
             }.navigationSplitViewColumnWidth(180)
@@ -29,11 +33,10 @@ struct Home: View {
                         }
                     }
                 }
-        }
-        detail: {
+        } detail: {
             Text("Selecione um Item")
         }.navigationTitle("Ativo Alvo")
-        .sheet(isPresented: $showAdd) { Add() }
+            .sheet(isPresented: $showAdd) { Add() }
     }
 }
 
