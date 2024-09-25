@@ -1,5 +1,5 @@
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 @main
 struct Ativo_AlvoApp: App {

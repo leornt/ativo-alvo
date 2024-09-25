@@ -1,7 +1,9 @@
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct Home: View {
+    @State private var showAdd = false
+
     var body: some View {
         NavigationSplitView {
             List {
@@ -12,7 +14,7 @@ struct Home: View {
                     }
                 }
                 Divider()
-                ForEach(0..<10) { index in
+                ForEach(0 ..< 10) { index in
                     NavigationLink(destination: Text("Item \(index)")) {
                         Text("Item \(index)")
                     }
@@ -20,9 +22,9 @@ struct Home: View {
             }.navigationSplitViewColumnWidth(180)
                 .toolbar {
                     ToolbarItem {
-                        NavigationLink(
-                            destination: Add()
-                        ) {
+                        Button {
+                            showAdd.toggle()
+                        } label: {
                             Image(systemName: "plus.circle")
                         }
                     }
@@ -31,6 +33,7 @@ struct Home: View {
         detail: {
             Text("Selecione um Item")
         }.navigationTitle("Ativo Alvo")
+        .sheet(isPresented: $showAdd) { Add() }
     }
 }
 
