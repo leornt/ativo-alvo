@@ -2,10 +2,15 @@ import SwiftUI
 
 struct Wallet: View {
     var body: some View {
-        Text("Tela Minha Carteira")
+        HStack {
+            VStack {
+                Text("Minha Carteira")
+                AssetChart(wallet: true)
+            }
+            VStack {
+                Text("Carteira Ideal")
+                AssetChart()
+            }
+        }
     }
-}
-
-#Preview {
-    Wallet()
 }
