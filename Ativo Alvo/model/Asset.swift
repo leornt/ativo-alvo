@@ -2,7 +2,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class ModelAsset {
+final class ModelAsset: Identifiable {
     init(code: String, quantity: Int) {
         self.code = code
         self.quantity = quantity

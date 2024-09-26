@@ -5,3 +5,7 @@ struct Wallet: View {
         Text("Tela Minha Carteira")
     }
 }
+
+#Preview {
+    Wallet()
+}

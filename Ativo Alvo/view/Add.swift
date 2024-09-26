@@ -1,19 +1,19 @@
 import SwiftUI
 
 struct Add: View {
-    init(asset: ModelAsset? = nil) {
-        isEdit = asset != nil
-        self.asset = asset ?? ModelAsset(code: "", quantity: 0)
+    init(value: Binding<ModelAsset>? = nil) {
+        isEdit = value != nil
+        _asset = value ?? .constant(ModelAsset(code: "", quantity: 0))
     }
 
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
 
+    @Binding private var asset: ModelAsset
     @State private var error: String = ""
     @State private var isEdit: Bool = false
     @State private var isError: Bool = false
     @State private var isLoading: Bool = false
-    @State private var asset: ModelAsset
     @State private var step: Int = 1
 
     func add() async {
