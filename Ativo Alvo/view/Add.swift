@@ -1,3 +1,4 @@
+import SwiftData
 import SwiftUI
 
 struct Add: View {
@@ -8,6 +9,7 @@ struct Add: View {
 
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
+    @Query(sort: \ModelAsset.code) var assets: [ModelAsset]
 
     @Binding private var asset: ModelAsset
     @State private var error: String = ""
@@ -28,41 +30,80 @@ struct Add: View {
         dismiss()
     }
 
+    func getRemaining() -> Double {
+        var remaining: Double = 100
+        for asset in assets {
+            if asset.code == self.asset.code {
+                continue
+            }
+            remaining -= asset.ideal
+        }
+        return remaining
+    }
+
     var body: some View {
         ZStack {
             VStack(spacing: 32) {
-                Text(
-                    isEdit
-                        ? "Editando: \(asset.code)"
-                        : "Qual ativo deseja adicionar? (ex: MXRF11)"
-                )
-                TextField(
-                    "_ _ _ _ _ _ _",
-                    text: $asset.code
-                )
-                .frame(width: 85)
-                .onChange(of: asset.code) {
-                    asset.code = asset.code.uppercased()
-                    if asset.code.count > 7 {
-                        asset.code = String(asset.code.prefix(7))
-                    }
-                }
-                HStack {
-                    Stepper(
-                        "Cotas: \(asset.quantity)",
-                        value: $asset.quantity,
-                        in: 0 ... Int.max,
-                        step: step
-                    )
-                    Button("x\(step)") {
-                        switch step {
-                        case 1:
-                            step = 10
-                        case 10:
-                            step = 100
-                        default:
-                            step = 1
+                HStack(spacing: 32) {
+                    VStack(spacing: 32) {
+                        Text(
+                            isEdit
+                                ? "Editando: \(asset.code)"
+                                : "Qual ativo deseja adicionar? (ex: MXRF11)"
+                        )
+                        TextField(
+                            "_ _ _ _ _ _ _",
+                            text: $asset.code
+                        )
+                        .frame(width: 85)
+                        .onChange(of: asset.code) {
+                            asset.code = asset.code.uppercased()
+                            if asset.code.count > 7 {
+                                asset.code = String(asset.code.prefix(7))
+                            }
                         }
+                        HStack {
+                            Stepper(
+                                "Cotas: \(asset.quantity)",
+                                value: $asset.quantity,
+                                in: 0 ... Int.max,
+                                step: step
+                            )
+                            Button("x\(step)") {
+                                switch step {
+                                case 1:
+                                    step = 10
+                                case 10:
+                                    step = 100
+                                default:
+                                    step = 1
+                                }
+                            }
+                        }
+                        HStack {
+                            Slider(
+                                value: $asset.ideal,
+                                in: 0 ... getRemaining()
+                            )
+                            TextField(
+                                "",
+                                text: Binding(
+                                    get: { String(format: "%.2f", asset.ideal) },
+                                    set: { asset.ideal = Double($0) ?? 0 }
+                                )
+                            )
+                            .frame(width: 60)
+                            .multilineTextAlignment(.trailing)
+                            .onChange(of: asset.ideal) {
+                                if asset.ideal > getRemaining() {
+                                    asset.ideal = getRemaining()
+                                }
+                            }
+                            Text("%")
+                        }
+                    }
+                    if isEdit {
+                        AssetChart()
                     }
                 }
                 HStack(spacing: 16) {

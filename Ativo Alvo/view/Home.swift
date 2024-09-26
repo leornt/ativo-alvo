@@ -3,7 +3,6 @@ import SwiftUI
 
 struct Home: View {
     @Environment(\.modelContext) var modelContext
-
     @Query(sort: \ModelAsset.code) var assets: [ModelAsset]
 
     @State private var showAdd: Bool = false

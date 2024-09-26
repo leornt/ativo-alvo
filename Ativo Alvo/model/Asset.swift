@@ -3,12 +3,15 @@ import SwiftData
 
 @Model
 final class ModelAsset: Identifiable {
-    init(code: String, quantity: Int) {
+    init(code: String, ideal: Double = 0, quantity: Int) {
         self.code = code
+        self.ideal = ideal
         self.quantity = quantity
     }
 
     @Attribute(.unique) var code: String
-    var quantity: Int
+
+    var ideal: Double
     var price: Double?
+    var quantity: Int
 }
