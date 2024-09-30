@@ -38,11 +38,7 @@ struct Home: View {
                 .toolbar {
                     ToolbarItem {
                         Button {
-                            Task {
-                                let res = await API().getPrice(code: "MXRF11")
-                                print(res)
-                            }
-                           showAdd.toggle()
+                            showAdd.toggle()
                         } label: {
                             Image(systemName: "plus.circle")
                         }
