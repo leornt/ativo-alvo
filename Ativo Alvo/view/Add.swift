@@ -24,16 +24,16 @@ struct Add: View {
             isError.toggle()
             return
         }
-        
+
         let price = await API().getPrice(code: asset.code)
-        if (price == 0) {
+        if price == 0 {
             error = "Preço não encontrado"
             isError.toggle()
             return
         }
         asset.price = price
         asset.lastUpdate = Date.now
-        
+
         if !isEdit {
             modelContext.insert(asset)
         }
@@ -58,7 +58,7 @@ struct Add: View {
                     VStack(spacing: 32) {
                         Text(
                             isEdit
-                                ? "Editando: \(asset.code)"
+                                ? "\(asset.code) (R$ \(asset.priceF()))"
                                 : "Qual ativo deseja adicionar? (ex: MXRF11)"
                         )
                         TextField(

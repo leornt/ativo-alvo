@@ -15,4 +15,13 @@ final class ModelAsset: Identifiable {
     var lastUpdate: Date?
     var price: Double?
     var quantity: Int
+
+    func priceF() -> String {
+        if price == nil {
+            return "-"
+        }
+        return String(format: "%.2f", price!)
+            .replacingOccurrences(of: ",", with: "")
+            .replacingOccurrences(of: ".", with: ",")
+    }
 }
