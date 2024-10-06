@@ -16,7 +16,6 @@ struct Add: View {
     @State private var isEdit: Bool = false
     @State private var isError: Bool = false
     @State private var isLoading: Bool = false
-    @State private var step: Int = 1
 
     func add() async {
         if asset.code.isEmpty {
@@ -73,24 +72,6 @@ struct Add: View {
                             }
                         }
                         HStack {
-                            Stepper(
-                                "Cotas: \(asset.quantity)",
-                                value: $asset.quantity,
-                                in: 0 ... Int.max,
-                                step: step
-                            )
-                            Button("x\(step)") {
-                                switch step {
-                                case 1:
-                                    step = 10
-                                case 10:
-                                    step = 100
-                                default:
-                                    step = 1
-                                }
-                            }
-                        }
-                        HStack {
                             Slider(
                                 value: $asset.ideal,
                                 in: 0 ... getRemaining()
@@ -114,6 +95,11 @@ struct Add: View {
                     }
                     if isEdit {
                         AssetChart()
+                    }
+                }
+                if asset.ideal == 0 {
+                    Toggle(isOn: $asset.isIgnored) {
+                        Text("Ignorar ativo? (Fora da carteira recomendada)")
                     }
                 }
                 HStack(spacing: 16) {

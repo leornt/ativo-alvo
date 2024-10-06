@@ -12,6 +12,7 @@ final class ModelAsset: Identifiable {
     @Attribute(.unique) var code: String
 
     var ideal: Double
+    var isIgnored: Bool = false
     var lastUpdate: Date?
     var price: Double?
     var quantity: Int
